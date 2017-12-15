@@ -40,14 +40,16 @@ def convert(dataset):
                 ret, frame = cap.read()  # extract frame
                 if ret is False:
                     break
-                frame = hs.handsegment(frame)
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                lastFrame = frame
                 framename = os.path.splitext(video)[0]
                 framename = framename+"_frame_"+str(count)+".jpeg"
                 hc.append([join(frames, framename), adhyan, frameCount])
+
                 if(not os.path.exists(framename)):
+                    frame = hs.handsegment(frame)
+                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                    lastFrame = frame
                     cv2.imwrite(framename, frame)
+
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
                 count += 1
