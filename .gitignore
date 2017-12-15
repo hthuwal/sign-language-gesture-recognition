@@ -103,3 +103,31 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+/Analysis/
+
+/Our Paper/
+
+/bottlenecks/
+
+/checkpoints/
+
+/checkpoints_backup/
+
+/checkpoints_pool/
+
+/data/
+
+/inception/
+
+/majorData/
+
+/numbering.txt
+
+/out.txt
+
+/output.mkv
+
+/test/
+
+/Screenshot from 2017-05-21 11-22-40.png
