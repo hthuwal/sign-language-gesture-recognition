@@ -131,3 +131,9 @@ venv.bak/
 /test/
 
 /Screenshot from 2017-05-21 11-22-40.png
+
+/sign-language-gesture-recognition.sublime-project
+
+/.gitignore
+
+/sign-language-gesture-recognition.sublime-workspace
