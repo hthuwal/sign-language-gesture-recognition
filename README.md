@@ -1,6 +1,8 @@
 # sign-language-gesture-recognition-from-video-sequences
 SIGN LANGUAGE GESTURE RECOGNITION FROM VIDEO SEQUENCES  USING RNN AND CNN
 
+Update: The paper of this work is about to be published in April 2018. I'll update the link as soon as it is available. Please do cite it if you find this project useful. :)
+
 ## Requirements
 * Install [opencv](https://docs.opencv.org/trunk/d7/d9f/tutorial_linux_install.html).
   Note: **pip install opencv-python** does not have video capabilities. So I recommend to build it from source as described above.
