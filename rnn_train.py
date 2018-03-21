@@ -23,9 +23,13 @@ def main(filename, frames, batch_size, num_classes, input_length):
     net = get_network_wide(frames, input_length, num_classes)
 
     # Train the model.
-    model = tflearn.DNN(net, tensorboard_verbose=0)
-    model.load('checkpoints/rnn.tflearn')
-    print "Model Loaded"
+    if os.path.exists('checkpoints/rnn.tflearn'):
+        print "Model already exists! Loading it"
+        model.load('checkpoints/rnn.tflearn')
+        print "Model Loaded"
+    else:
+        model = tflearn.DNN(net, tensorboard_verbose=0)
+    
     model.fit(X_train, y_train, validation_set=(X_test, y_test),
               show_metric=True, batch_size=batch_size, snapshot_step=100,
               n_epoch=10)
