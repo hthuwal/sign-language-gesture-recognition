@@ -1,7 +1,9 @@
 # sign-language-gesture-recognition-from-video-sequences
 SIGN LANGUAGE GESTURE RECOGNITION FROM VIDEO SEQUENCES  USING RNN AND CNN
 
-Update: The paper of this work is about to be published in April 2018. I'll update the link as soon as it is available. Please do cite it if you find this project useful. :)
+The Paper on this work is published [here](https://link.springer.com/chapter/10.1007/978-981-10-7566-7_63) 
+
+Please do cite it if you find this project useful. :)
 ## DataSet Used
 * [Argentinian Sign Language Gestures](http://facundoq.github.io/unlp/lsa64/). The dataset is made available strictly for academic purposes by the owners. Please read the license terms carefully and cite their paper if you plan to use the dataset.
 
