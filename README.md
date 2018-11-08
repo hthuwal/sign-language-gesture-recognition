@@ -67,7 +67,10 @@ Please do cite it if you find this project useful. :)
 
 **3. Retrain the inception v3 model.**
 
-   - Download the [retrain.py](https://raw.githubusercontent.com/tensorflow/hub/r0.1/examples/image_retraining/retrain.py).
+   - Download retrain.py.
+       ```shell
+       curl -LO https://github.com/tensorflow/hub/raw/master/examples/image_retraining/retrain.py
+       ```
       Note: This link may change in the future. Please refer [Tensorflow retrain tutorial](https://www.tensorflow.org/tutorials/image_retraining#training_on_flowers)
    - Run the following command to retrain the inception model.
       
