@@ -28,11 +28,11 @@ def convert(dataset):
 
         for video in videos:
             name = os.path.abspath(video)
-            fcount = fcount+1
-            print fcount, " : ", name
+            fcount = fcount + 1
+            print(fcount, " : ", name)
             cap = cv2.VideoCapture(name)  # capturing input video
             frameCount = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-            print frameCount
+            print(frameCount)
             count = 0
             os.chdir(frames)
             lastFrame = None
@@ -41,7 +41,7 @@ def convert(dataset):
                 if ret is False:
                     break
                 framename = os.path.splitext(video)[0]
-                framename = framename+"_frame_"+str(count)+".jpeg"
+                framename = framename + "_frame_" + str(count) + ".jpeg"
                 hc.append([join(frames, framename), adhyan, frameCount])
 
                 if(not os.path.exists(framename)):
@@ -55,7 +55,7 @@ def convert(dataset):
                 count += 1
             while(count < 201):
                 framename = os.path.splitext(video)[0]
-                framename = framename+"_frame_"+str(count)+".jpeg"
+                framename = framename + "_frame_" + str(count) + ".jpeg"
                 hc.append([join(frames, framename), adhyan, frameCount])
                 if(not os.path.exists(framename)):
                     cv2.imwrite(framename, lastFrame)
@@ -64,9 +64,9 @@ def convert(dataset):
             os.chdir(gesture)
             cap.release()
             cv2.destroyAllWindows()
-    print hc
+    print(hc)
     # for frame in hc:
-    #     print frame
+    #     print(frame)
     os.chdir(rootPath)
     # with open('data/labeled-frames-1.pkl', 'wb') as handle:
     with open('data/labeled-frames-2.pkl', 'wb') as handle:
