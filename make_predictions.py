@@ -16,7 +16,7 @@ def get_labels():
     return labels
 
 
-def predict_on_frames(frames, batch):
+def predict_on_frames(frames):
     """Given a list of frames, predict all their classes."""
     # Unpersists graph from file
     with tf.gfile.FastGFile("retrained_graph.pb", 'rb') as fin:
@@ -104,32 +104,15 @@ def main(train=True):
     with open('data/labeled-frames-' + train_or_test + '.pkl', 'rb') as fin:
         frames = pickle.load(fin)
 
-    # for frame in frames:
-    #     print frame
-    # Predict on this batch and get the accuracy.
-    predictions = predict_on_frames(frames, batch)
-    for frame in predictions:
-        print frame
+    predictions = predict_on_frames(frames)
+    
     accuracy = get_accuracy(predictions, labels)
     print("Batch accuracy: %.5f" % accuracy)
 
     # Save it.
-    with open('data/predicted-frames-' + batch + '.pkl', 'wb') as fout:
+    with open('data/predicted-frames-' + train_or_test + '.pkl', 'wb') as fout:
         pickle.dump(predictions, fout)
 
-    # for batch in batches:
-    #     print("Doing batch %s" % batch)
-    #     with open('data/labeled-frames-' + batch + '.pkl', 'rb') as fin:
-    #         frames = pickle.load(fin)
-
-    #     # Predict on this batch and get the accuracy.
-    #     predictions = predict_on_frames(frames, batch)
-    #     accuracy = get_accuracy(predictions, labels)
-    #     print("Batch accuracy: %.5f" % accuracy)
-
-    #     # Save it.
-    #     with open('data/predicted-frames-' + batch + '.pkl', 'wb') as fout:
-    #         pickle.dump(predictions, fout)
     print("Done.")
 
 if __name__ == '__main__':
