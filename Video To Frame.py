@@ -4,48 +4,56 @@ import pickle
 from os.path import join, exists
 import handsegment as hs
 import argparse
+from tqdm import tqdm
+
 hc = []
 
 
-def convert(dataset, train=True):
-    fcount = 0
+def convert(gesture_folder, target_folder, train=True):
     rootPath = os.getcwd()
-    majorData = os.path.join(os.getcwd(), "majorData")
-    if (not exists(majorData)):
-        os.makedirs(majorData)
-    dataset = os.path.join(os.getcwd(), dataset)
-    os.chdir(dataset)
-    x = os.listdir(os.getcwd())
+    majorData = os.path.abspath(target_folder)
 
-    for gesture in x:
-        gesture_label = gesture
-        gesture = os.path.join(dataset, gesture)
-        os.chdir(gesture)
-        frames = os.path.join(majorData, gesture_label)
-        if(not os.path.exists(frames)):
-            os.makedirs(frames)
+    if not exists(majorData):
+        os.makedirs(majorData)
+
+    gesture_folder = os.path.abspath(gesture_folder)
+
+    os.chdir(gesture_folder)
+    gestures = os.listdir(os.getcwd())
+
+    print("Source Directory containing gestures: %s" % (gesture_folder))
+    print("Destination Directory containing frames: %s\n" % (majorData))
+
+    for gesture in tqdm(gestures, unit='actions', ascii=True):
+        gesture_path = os.path.join(gesture_folder, gesture)
+        os.chdir(gesture_path)
+
+        gesture_frames_path = os.path.join(majorData, gesture)
+        if not os.path.exists(gesture_frames_path):
+            os.makedirs(gesture_frames_path)
+
         videos = os.listdir(os.getcwd())
         videos = [video for video in videos if(os.path.isfile(video))]
 
-        for video in videos:
+        for video in tqdm(videos, unit='videos', ascii=True):
             name = os.path.abspath(video)
-            fcount = fcount + 1
-            print(fcount, " : ", name)
             cap = cv2.VideoCapture(name)  # capturing input video
             frameCount = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-            print(frameCount)
-            count = 0
-            os.chdir(frames)
             lastFrame = None
-            while(1):
+
+            os.chdir(gesture_frames_path)
+            count = 0
+
+            # assumption only first 200 frames are important
+            while count < 201:
                 ret, frame = cap.read()  # extract frame
                 if ret is False:
                     break
                 framename = os.path.splitext(video)[0]
                 framename = framename + "_frame_" + str(count) + ".jpeg"
-                hc.append([join(frames, framename), gesture_label, frameCount])
+                hc.append([join(gesture_frames_path, framename), gesture, frameCount])
 
-                if(not os.path.exists(framename)):
+                if not os.path.exists(framename):
                     frame = hs.handsegment(frame)
                     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                     lastFrame = frame
@@ -54,27 +62,31 @@ def convert(dataset, train=True):
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
                 count += 1
-            while(count < 201):
+
+            # repeat last frame untill we get 200 frames
+            while count < 201:
                 framename = os.path.splitext(video)[0]
                 framename = framename + "_frame_" + str(count) + ".jpeg"
-                hc.append([join(frames, framename), gesture_label, frameCount])
-                if(not os.path.exists(framename)):
+                hc.append([join(gesture_frames_path, framename), gesture, frameCount])
+                if not os.path.exists(framename):
                     cv2.imwrite(framename, lastFrame)
                 count += 1
 
-            os.chdir(gesture)
+            os.chdir(gesture_path)
             cap.release()
             cv2.destroyAllWindows()
-    print(hc)
+
     os.chdir(rootPath)
     train_or_test = "train" if train else "test"
-    # with open('data/labeled-frames-1.pkl', 'wb') as handle:
+
     with open('data/labeled-frames-' + train_or_test + '.pkl', 'wb') as handle:
         pickle.dump(hc, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Dump Predictions(probability distribution) for each frame')
-    parser.add_argument('--test', action='store_true', help='Use labeled frames')
+    parser = argparse.ArgumentParser(description='Extract Individual Frames from gesture videos.')
+    parser.add_argument('gesture_folder', help='Path to folder containing folders of videos of different gestures.')
+    parser.add_argument('target_folder', help='Path to folder where extracted frames should be kept.')
+    parser.add_argument('--test', action='store_true', help='Should be passed if you are extracting frames from test data.')
     args = parser.parse_args()
-    convert("test/", train=not args.test)
+    convert(args.gesture_folder, args.target_folder, train=not args.test)
