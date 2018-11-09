@@ -21,48 +21,54 @@ Please do cite it if you find this project useful. :)
 
 ## Training
 
-**1. Data Folder**
+#### 1. Data Folder
   
-  Create a Folder named **test** in the project root directory. It should contain folders corresponding to each cateogry, each folder containing corresponding videos.
-  For example:
+Create a Folder with any name say **train_videos** in the project root directory. It should contain folders corresponding to each cateogry, each folder containing corresponding videos.
 
-    ```
-    test
-    ├── Accept
-    │   ├── 050_003_001.mp4
-    │   ├── 050_003_002.mp4
-    │   ├── 050_003_003.mp4
-    │   └── 050_003_004.mp4
-    ├── Appear
-    │   ├── 053_003_001.mp4
-    │   ├── 053_003_002.mp4
-    │   ├── 053_003_003.mp4
-    │   └── 053_003_004.mp4
-    ├── Argentina
-    │   ├── 024_003_001.mp4
-    │   ├── 024_003_002.mp4
-    │   ├── 024_003_003.mp4
-    │   └── 024_003_004.mp4
-    └── Away
-        ├── 013_003_001.mp4
-        ├── 013_003_002.mp4
-        ├── 013_003_003.mp4
-        └── 013_003_004.mp4
-    ```
+For example:
+
+```
+train_videos
+├── Accept
+│   ├── 050_003_001.mp4
+│   ├── 050_003_002.mp4
+│   ├── 050_003_003.mp4
+│   └── 050_003_004.mp4
+├── Appear
+│   ├── 053_003_001.mp4
+│   ├── 053_003_002.mp4
+│   ├── 053_003_003.mp4
+│   └── 053_003_004.mp4
+├── Argentina
+│   ├── 024_003_001.mp4
+│   ├── 024_003_002.mp4
+│   ├── 024_003_003.mp4
+│   └── 024_003_004.mp4
+└── Away
+    ├── 013_003_001.mp4
+    ├── 013_003_002.mp4
+    ├── 013_003_003.mp4
+    └── 013_003_004.mp4
+```
 
 
 
-**2. Extracting frames from all videos.**
-   
-   - Run the following commnd to extract frames all videos. This wll create a folder named **majorData** and extract frames to that folder.
+#### 2. Extracting frames from training videos.
 
-     ```shell
-     python "Video To Frame.py"
-     ```
-   
-   - Note: Before running the script, make sure that the script is dumping data into file `data/labeled-frames-1.pkl` (Probably line 72). You will need to create a folder named **data** in the root directory.
-       
-   - The code involves some hand segmentation (based on the data we used) for each frame. (You can remove that code if you are working on some other data set)
+```bash
+python3 "video-to-grame.py" train_videos train_frames
+```
+
+Extract Individual frames from `train_videos` to `train_frames`.
+
+- **positional arguments:**
+    - train_videos:  Path to folder containing folders of videos of different
+                  gestures.
+    - train_frames:   Path to folder where extracted frames should be kept.
+
+Above commnd will extract frames all videos in `train_videos` to `train_frames` and generate a pickle dump `data/labeled-frames-train.pkl`.
+
+The code involves some hand segmentation (based on the data we used) for each frame. (You can remove that code if you are working on some other data set)
 
 
 **3. Retrain the inception v3 model.**
