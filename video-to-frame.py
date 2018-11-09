@@ -79,6 +79,9 @@ def convert(gesture_folder, target_folder, train=True):
     os.chdir(rootPath)
     train_or_test = "train" if train else "test"
 
+    if not exists("data"):
+        os.makedirs("data")
+
     with open('data/labeled-frames-' + train_or_test + '.pkl', 'wb') as handle:
         pickle.dump(hc, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
