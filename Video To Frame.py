@@ -3,10 +3,11 @@ import os
 import pickle
 from os.path import join, exists
 import handsegment as hs
+import argparse
 hc = []
 
 
-def convert(dataset):
+def convert(dataset, train=True):
     fcount = 0
     rootPath = os.getcwd()
     majorData = os.path.join(os.getcwd(), "majorData")
@@ -17,10 +18,10 @@ def convert(dataset):
     x = os.listdir(os.getcwd())
 
     for gesture in x:
-        adhyan = gesture
+        gesture_label = gesture
         gesture = os.path.join(dataset, gesture)
         os.chdir(gesture)
-        frames = os.path.join(majorData, adhyan)
+        frames = os.path.join(majorData, gesture_label)
         if(not os.path.exists(frames)):
             os.makedirs(frames)
         videos = os.listdir(os.getcwd())
@@ -42,7 +43,7 @@ def convert(dataset):
                     break
                 framename = os.path.splitext(video)[0]
                 framename = framename + "_frame_" + str(count) + ".jpeg"
-                hc.append([join(frames, framename), adhyan, frameCount])
+                hc.append([join(frames, framename), gesture_label, frameCount])
 
                 if(not os.path.exists(framename)):
                     frame = hs.handsegment(frame)
@@ -56,7 +57,7 @@ def convert(dataset):
             while(count < 201):
                 framename = os.path.splitext(video)[0]
                 framename = framename + "_frame_" + str(count) + ".jpeg"
-                hc.append([join(frames, framename), adhyan, frameCount])
+                hc.append([join(frames, framename), gesture_label, frameCount])
                 if(not os.path.exists(framename)):
                     cv2.imwrite(framename, lastFrame)
                 count += 1
@@ -65,12 +66,15 @@ def convert(dataset):
             cap.release()
             cv2.destroyAllWindows()
     print(hc)
-    # for frame in hc:
-    #     print(frame)
     os.chdir(rootPath)
+    train_or_test = "train" if train else "test"
     # with open('data/labeled-frames-1.pkl', 'wb') as handle:
-    with open('data/labeled-frames-2.pkl', 'wb') as handle:
+    with open('data/labeled-frames-' + train_or_test + '.pkl', 'wb') as handle:
         pickle.dump(hc, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-convert("test/")
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Dump Predictions(probability distribution) for each frame')
+    parser.add_argument('--test', action='store_true', help='Use labeled frames')
+    args = parser.parse_args()
+    convert("test/", train=not args.test)
