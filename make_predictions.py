@@ -78,22 +78,22 @@ def get_accuracy(predictions, labels):
     for frame in predictions:
         # Get the highest confidence class.
         this_prediction = frame[0].tolist()
-        # print this_prediction
+        # print(this_prediction)
         this_label = frame[1]
-        # print this_label
+        # print(this_label)
 
         max_value = max(this_prediction)
         max_index = this_prediction.index(max_value)
         predicted_label = labels[max_index]
-        # print predicted_label
+        # print(predicted_label)
 
         # Now see if it matches.
-        print predicted_label, this_label
+        print(predicted_label, this_label)
         if predicted_label.lower() == this_label.lower():
             correct += 1
-        print correct, len(predictions)
+        print(correct, len(predictions))
 
-    print correct, len(predictions)
+    print(correct, len(predictions))
     accuracy = correct / float(len(predictions))
     return accuracy
 
@@ -115,6 +115,7 @@ def main(train=True):
         pickle.dump(predictions, fout)
 
     print("Done.")
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Dump Predictions(probability distribution) for each frame')
