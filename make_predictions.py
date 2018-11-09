@@ -26,18 +26,17 @@ def predict_on_frames(frames):
 
     with tf.Session() as sess:
         softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
+        input_layer = sess.graph.get_operations()[0].name + ':0'
 
         frame_predictions = []
-        # image_path = 'images/' + batch + '/'
+
         pbar = tqdm(total=len(frames))
         for i, frame in enumerate(frames):
-            filename = frame[0]
             label = frame[1]
             frameCount = frame[2]
 
             # Get the image path.
             image = frame[0]
-            # print image
 
             # Read in the image_data
             image_data = tf.gfile.FastGFile(image, 'rb').read()
@@ -45,15 +44,17 @@ def predict_on_frames(frames):
             try:
                 predictions = sess.run(
                     softmax_tensor,
-                    {'DecodeJpeg/contents:0': image_data}
+                    {input_layer: image_data}
                 )
                 prediction = predictions[0]
-                # print prediction
+
             except KeyboardInterrupt:
                 print("You quit with ctrl+c")
                 sys.exit()
-            except:
-                print("Error making prediction, continuing.")
+
+            except Exception as e:
+                print("Error making prediction: %s" % (e))
+                print("\nContinuing.")
                 continue
 
             # Save the probability that it's each of our classes.
