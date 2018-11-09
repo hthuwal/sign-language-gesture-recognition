@@ -2,6 +2,7 @@ import pickle
 import sys
 import tensorflow as tf
 from tqdm import tqdm
+import argparse
 
 
 def get_labels():
@@ -96,13 +97,11 @@ def get_accuracy(predictions, labels):
     return accuracy
 
 
-def main():
+def main(train=True):
     labels = get_labels()
-    # print labels
-    batch = '1'
-    # batch = '2'
-
-    with open('data/labeled-frames-' + batch + '.pkl', 'rb') as fin:
+    # print(labels)
+    train_or_test = "train" if train else "test"
+    with open('data/labeled-frames-' + train_or_test + '.pkl', 'rb') as fin:
         frames = pickle.load(fin)
 
     # for frame in frames:
@@ -134,4 +133,7 @@ def main():
     print("Done.")
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='Dump Predictions(probability distribution) for each frame')
+    parser.add_argument('--test', action='store_true', help='Use labeled frames')
+    args = parser.parse_args()
+    main(not args.test)
