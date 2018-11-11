@@ -9,7 +9,7 @@ from tqdm import tqdm
 hc = []
 
 
-def convert(gesture_folder, target_folder, train=True):
+def convert(gesture_folder, target_folder):
     rootPath = os.getcwd()
     majorData = os.path.abspath(target_folder)
 
@@ -77,19 +77,11 @@ def convert(gesture_folder, target_folder, train=True):
             cv2.destroyAllWindows()
 
     os.chdir(rootPath)
-    train_or_test = "train" if train else "test"
-
-    if not exists("data"):
-        os.makedirs("data")
-
-    with open('data/labeled-frames-' + train_or_test + '.pkl', 'wb') as handle:
-        pickle.dump(hc, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Extract Individual Frames from gesture videos.')
     parser.add_argument('gesture_folder', help='Path to folder containing folders of videos of different gestures.')
     parser.add_argument('target_folder', help='Path to folder where extracted frames should be kept.')
-    parser.add_argument('--test', action='store_true', help='Should be passed if you are extracting frames from test data.')
     args = parser.parse_args()
-    convert(args.gesture_folder, args.target_folder, train=not args.test)
+    convert(args.gesture_folder, args.target_folder)
