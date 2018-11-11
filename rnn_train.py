@@ -2,11 +2,23 @@
 Given a saved output of predictions or pooled features from our CNN,
 train an RNN (LSTM) to examine temporal dependencies.
 """
-from rnn_utils import get_network, get_network_deep, get_network_wide, get_data
+from rnn_utils import get_network_wide, get_data
+import argparse
+import tensorflow as tf
 import tflearn
+import os
 
 
 def main(filename, frames, batch_size, num_classes, input_length):
+def load_labels(label_file):
+    label = {}
+    count = 0
+    proto_as_ascii_lines = tf.gfile.GFile(label_file).readlines()
+    for l in proto_as_ascii_lines:
+        label[l.strip()] = count
+        count += 1
+    return label
+
     """From the blog post linked above."""
     # Get our data.
     X_train, X_test, y_train, y_test = get_data(
