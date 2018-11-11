@@ -115,7 +115,7 @@ if __name__ == "__main__":
     parser.add_argument("frames_folder", help="'Path to folder containing folders of frames of different gestures.'")
     parser.add_argument("--input_layer", help="name of input layer", default='Placeholder')
     parser.add_argument("--output_layer", help="name of output layer", default='final_result')
-    parser.add_argument('--test', action='store_true', help='Use labeled frames')
+    parser.add_argument('--test', action='store_true', help='passed if frames_folder belongs to test_data')
     parser.add_argument("--batch_size", help="batch Size", default=10)
     args = parser.parse_args()
 
