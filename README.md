@@ -19,11 +19,11 @@ Please do cite it if you find this project useful. :)
   pip install tflearn
   ```
 
-## Training
+## Training and Testing
 
-#### 1. Data Folder
+### 1. Data Folder
   
-Create a Folder with any name say **train_videos** in the project root directory. It should contain folders corresponding to each cateogry, each folder containing corresponding videos.
+Create two folders with any name say **train_videos**  and **test_videos** in the project root directory. It should contain folders corresponding to each cateogry, each folder containing corresponding videos.
 
 For example:
 
@@ -53,41 +53,64 @@ train_videos
 
 
 
-#### 2. Extracting frames from training videos.
+### 2. Extracting frames
 
-```bash
-python3 "video-to-grame.py" train_videos train_frames
-```
+#### Command
 
-Extract Individual frames from `train_videos` to `train_frames`.
+- **usage:**
+
+    ```
+    video-to-frame.py [-h] gesture_folder target_folder
+    ```
+
+    Extract frames from gesture videos.
 
 - **positional arguments:**
-    - train_videos:  Path to folder containing folders of videos of different
-                  gestures.
-    - train_frames:   Path to folder where extracted frames should be kept.
+    
+    ```
+    gesture_folder:  Path to folder containing folders of videos of different
+                      gestures.
+    target_folder:   Path to folder where extracted frames should be kept.
+    ```
 
-Above commnd will extract frames all videos in `train_videos` to `train_frames` and generate a pickle dump `data/labeled-frames-train.pkl`.
+- **optional arguments:**
+
+    ```
+    -h, --help      show the help message and exit
+    ```
 
 The code involves some hand segmentation (based on the data we used) for each frame. (You can remove that code if you are working on some other data set)
 
+#### Extracting frames form training videos
 
-**3. Retrain the inception v3 model.**
+```bash
+python3 "video-to-frame.py" train_videos train_frames
+```
+Extract frames from gestures in `train_videos` to `train_frames`.
 
-   - Download retrain.py.
-       ```shell
-       curl -LO https://github.com/tensorflow/hub/raw/master/examples/image_retraining/retrain.py
-       ```
-      Note: This link may change in the future. Please refer [Tensorflow retrain tutorial](https://www.tensorflow.org/tutorials/image_retraining#training_on_flowers)
-   - Run the following command to retrain the inception model.
-      
-      ```shell
-      python retrain.py --bottleneck_dir=bottlenecks --model_dir=inception --summaries_dir=training_summaries/long --output_graph=retrained_graph.pb --output_labels=retrained_labels.txt --image_dir=majorData
-      ```
+#### Extracting frames form test videos
 
-   This will create two file `retrained_labels.txt` and `retrained_graph.pb`
+```bash
+python3 "video-to-frame.py" test_videos test_frames
+```
+Extract frames from gestures in `test_videos` to `test_frames`.
 
-   For more information about the above command refer [here](https://codelabs.developers.google.com/codelabs/tensorflow-for-poets/#3).
+### 3. Retrain the Inception v3 model.
 
+- Download retrain.py.
+   ```shell
+   curl -LO https://github.com/tensorflow/hub/raw/master/examples/image_retraining/retrain.py
+   ```
+  Note: This link may change in the future. Please refer [Tensorflow retrain tutorial](https://www.tensorflow.org/tutorials/image_retraining#training_on_flowers)
+- Run the following command to retrain the inception model.
+  
+    ```shell
+    python3 retrain.py --bottleneck_dir=bottlenecks --summaries_dir=training_summaries/long --output_graph=retrained_graph.pb --output_labels=retrained_labels.txt --image_dir=train_frames
+    ```
+
+This will create two file `retrained_labels.txt` and `retrained_graph.pb`
+
+For more information about the above command refer [here](https://codelabs.developers.google.com/codelabs/tensorflow-for-poets/#3).
 
 **4. Representng each video as sequence of prediction (instead of sequence of frames)**
 
