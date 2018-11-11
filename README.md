@@ -4,6 +4,14 @@ SIGN LANGUAGE GESTURE RECOGNITION FROM VIDEO SEQUENCES  USING RNN AND CNN
 The Paper on this work is published [here](https://link.springer.com/chapter/10.1007/978-981-10-7566-7_63) 
 
 Please do cite it if you find this project useful. :)
+
+**UPDATE:**
+
+- Cleaner and understandable code.
+- Replaced all manual editing with command line arguments.
+- Removed Bugs due to changes in names of the `operations` in the inception model.
+- Code Tested on a dummy dataset of three classes on google colab.
+
 ## DataSet Used
 * [Argentinian Sign Language Gestures](http://facundoq.github.io/unlp/lsa64/). The dataset is made available strictly for academic purposes by the owners. Please read the license terms carefully and cite their paper if you plan to use the dataset.
 
@@ -273,7 +281,7 @@ python3 rnn_eval.py predicted-frames-final_result-test.pkl non_pool.model
 ```
 
 This will use the `non_pool.model` to predict the labels of the **softmax based representation** of the test videos.
-Predictions and corresponding gold labels for each test videos will be dumped in to **results.txt**
+Predictions and corresponding gold labels for each test video will be dumped in to **results.txt**
 
 #### Approach 2
 
@@ -282,7 +290,7 @@ python3 rnn_eval.py predicted-frames-GlobalPool-test.pkl pool.model
 ```
 
 This will use the `pool.model` to predict the labels of the **pool layer based representation** of the test videos.
-Predictions and corresponding gold labels for each test videos will be dumped in to **results.txt**
+Predictions and corresponding gold labels for each test video will be dumped in to **results.txt**
 
 
 Happy Coding :)
