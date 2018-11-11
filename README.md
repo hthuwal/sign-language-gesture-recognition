@@ -112,29 +112,89 @@ This will create two file `retrained_labels.txt` and `retrained_graph.pb`
 
 For more information about the above command refer [here](https://codelabs.developers.google.com/codelabs/tensorflow-for-poets/#3).
 
-**4. Representng each video as sequence of prediction (instead of sequence of frames)**
 
-   - Method 1 : Prediction -> The output of the final layer (i.e a list of probabilities)
+### 4. Intermediate Representation of Videos
 
-      ```shell
-      python make_prediction.py
-      ```
+#### Command
 
-     This will create a file `data/predicted-frames-1.pkl` that will be used by RNN.
-     
-     **Note**: Make sure before exeuting above command, variable `batch` in script `make_prediction.py` is set to 1.
+- **usage:**
 
-   - Method 2 : Prediction -> The output of the pool layer just before the output
+    ```
+    predict_spatial.py [-h] [--input_layer INPUT_LAYER]    
+                       [--output_layer OUTPUT_LAYER] [--test]    
+                       [--batch_size BATCH_SIZE]    
+                       graph frames_folder
+    ```
 
-      ```shell
-      python make_prediction_pool.py
-      ```
+- **positional arguments:** 
 
-      This will create a file `data/cnn-features-frames-1.pkl` that will be used by RNN.
+    ```
+    - graph                 graph/model to be executed
+    - frames_folder         Path to folder containing folders of frames of
+                            different gestures.
+    ```
 
-      **Note**: Make sure before exeuting above command, variable `batches=['1']` in script `make_prediction_pool.py`.
+- **optional arguments:**
 
-**5. Train the RNN.**
+    ```
+      -h, --help            show this help message and exit
+      --input_layer INPUT_LAYER
+                            name of input layer
+      --output_layer OUTPUT_LAYER
+                            name of output layer
+      --test                passed if frames_folder belongs to test_data
+      --batch_size BATCH_SIZE
+                            batch Size
+    ```
+
+#### Approach 1
+
+- Each Video is represented by a sequence of `n` dimensional vectors (probability distribution or output of softmax) one for each frame. Here `n` is the number of classes.
+
+    **On Training Data**
+
+    ```shell
+    python3 predict_spatial.py retrained_graph.pb train_frames --batch=100
+    ```
+
+    This will create a file `predicted-frames-final_result-train.pkl` that will be used by RNN.
+
+    **On Test Data**
+
+    ```shell
+    python3 predict_spatial.py retrained_graph.pb test_frames --batch=100 --test
+    ```
+
+    This will create a file `predicted-frames-final_result-test.pkl` that will be used by RNN. 
+
+#### Approach 2
+
+- Each Video represented by a sequence of 2048 dimensional vectors (output of last Pool Layer) one for each frame
+
+    **On Training Data**
+
+    ```shell
+    python3 predict_spatial.py retrained_graph.pb train_frames \
+    --output_layer="module_apply_default/InceptionV3/Logits/GlobalPool" \
+    --batch=100
+    ```
+
+    This will create a file `predicted-frames-GlobalPool-train.pkl` that will be used by RNN.
+
+    **On Test Data**
+
+    ```shell
+    python3 predict_spatial.py retrained_graph.pb train_frames \
+            --output_layer="module_apply_default/InceptionV3/Logits/GlobalPool" \
+            --batch=100 \
+            --test
+    ```
+
+    This will create a file `predicted-frames-GlobalPool-test.pkl` that will be used by RNN.
+
+### 5. Train the RNN.
+
+#### Command
 
   - The file `rnn_train.py ` containse the code to train one of the RNN models (described in `rnn_utils.py`).
   - Based on method used in previous step, you may need to comment/uncomment two lines in `rnn_train.py` (Line 40, 41)
