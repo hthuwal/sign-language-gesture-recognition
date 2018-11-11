@@ -9,21 +9,17 @@ import numpy as np
 import pickle
 
 
-def get_data(filename, num_frames, num_classes, input_length, ifTrain):
+def get_data(input_data_dump, num_frames_per_video, labels, ifTrain):
     """Get the data from our saved predictions or pooled features."""
 
     # Local vars.
     X = []
     y = []
     temp_list = deque()
-    labels = {}
-    count = 0
 
     # Open and get the features.
-    with open(filename, 'rb') as fin:
+    with open(input_data_dump, 'rb') as fin:
         frames = pickle.load(fin)
-        # for x in frames:
-        #     print x
         for i, frame in enumerate(frames):
 
             features = frame[0]
@@ -32,15 +28,10 @@ def get_data(filename, num_frames, num_classes, input_length, ifTrain):
             # frameCount = frame[2]
 
             # Convert our labels into binary.
-            if actual in labels:
-                actual = labels[actual]
-            else:
-                labels[actual] = count
-                actual = count
-                count += 1
+            actual = labels[actual]
 
             # Add to the queue.
-            if len(temp_list) == num_frames - 1:
+            if len(temp_list) == num_frames_per_video - 1:
                 temp_list.append(features)
                 flat = list(temp_list)
                 X.append(np.array(flat))
@@ -49,29 +40,23 @@ def get_data(filename, num_frames, num_classes, input_length, ifTrain):
             else:
                 temp_list.append(features)
                 continue
-    for key in labels:
-        print key, labels[key]
 
-    print("Total dataset size: %d" % len(X))
+    print("Class Name\tNumeric Label")
+    for key in labels:
+        print("%s\t\t%d" % (key, labels[key]))
 
     # Numpy.
     X = np.array(X)
     y = np.array(y)
 
-    # Reshape.
-    X = X.reshape(-1, num_frames, input_length)
-    num_classes = len(labels)
-    print num_classes
-    print labels
+    print("Dataset shape: ", X.shape)
 
     # One-hot encoded categoricals.
-    y = to_categorical(y, num_classes)
+    y = to_categorical(y, len(labels))
 
     # Split into train and test.
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.1, random_state=42)
-
     if ifTrain:
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
         return X_train, X_test, y_train, y_test
     else:
         return X, y
