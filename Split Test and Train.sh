@@ -1,25 +1,30 @@
 if [ ! -d $2 ];
 then
-mkdir $2
+	mkdir $2
 fi
-cd $1
-for folder in *
+
+source_dir="$(realpath $1)"
+dest_dir="$(realpath $2)"
+
+rm -rf dest_dir
+
+for folder in "$source_dir"/*
 do
-	x=$2"/"$folder
-	if [ ! -d $x ]
-	then
-		mkdir $x
+	label="$(basename $folder)"
+	echo "Label: "$label
+	target="$dest_dir/$label"
+	if ! [ -d "$target" ]; then
+		mkdir -p "$target"
 	fi
-	cd $1
-	cd $folder
+
 	count=0
-	for video in *
+	for file in "$folder"/*
 	do
-		if [ $count -eq 10 ]
-		then
+		file_name="$(basename $file)"
+		if [ $count -eq 2 ];then
 			break
 		fi
-		mv $video $2"/"$folder
-		count=$(($count+1))
-	done	
+		cp "$file" "$target/$file_name"
+		count=$((count + 1))
+	done
 done
