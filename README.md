@@ -13,7 +13,7 @@ Please do cite it if you find this project useful. :)
 - Code Tested on a dummy dataset of three classes on google colab.
 
 ## DataSet Used
-* [Argentinian Sign Language Gestures](http://facundoq.github.io/unlp/lsa64/). The dataset is made available strictly for academic purposes by the owners. Please read the license terms carefully and cite their paper if you plan to use the dataset.
+* [Argentinian Sign Language Gestures](https://facundoq.github.io/datasets/lsa64/). The dataset is made available strictly for academic purposes by the owners. Please read the license terms carefully and cite their paper if you plan to use the dataset.
 
 ## Requirements
 * Install [opencv](https://docs.opencv.org/trunk/d7/d9f/tutorial_linux_install.html).
